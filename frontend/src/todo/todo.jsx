@@ -6,7 +6,7 @@ import PageHeader from '../template/pageHeader'
 import TodoForm from './todoForm'
 import TodoList from './todoList'
 
-const URL = 'http://localhost:3003/api/todos'
+const URL = 'http://192.168.0.51:3003/api/todos'
 const URL_PHP ='http://localhost/angular_crud_with_pre/php/select.php?page=1&search_input'
 
 export default class Todo extends Component {
@@ -16,6 +16,8 @@ export default class Todo extends Component {
         this.handleAdd = this.handleAdd.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleRemove = this.handleRemove.bind(this)
+        this.markAsDone = this.markAsDone.bind(this)
+        this.markAsPending = this.markAsPending.bind(this)
 
         this.refresh()
         
@@ -43,6 +45,16 @@ export default class Todo extends Component {
             .then(resp=> this.refresh(this.state.description))
     }
 
+    markAsDone(todo){
+        axios.put(`${URL}/${todo._id}`, {...todo,done: true})
+            .then(resp=> this.refresh(this.state.description))
+    }
+
+    markAsPending(todo){
+        axios.put(`${URL}/${todo._id}`, {...todo,done: false})
+            .then(resp=> this.refresh(this.state.description))
+    }
+
     render(){
         return(
             <div>
@@ -52,7 +64,9 @@ export default class Todo extends Component {
                     handleAdd={this.handleAdd}/>
                 <TodoList 
                     list={this.state.list} 
-                    handleRemove={this.handleRemove}/>
+                    handleRemove={this.handleRemove}
+                    markAsDone={this.markAsDone}
+                    markAsPending={this.markAsPending}/>
             </div>
         )
     }
